@@ -1,9 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Dice : MonoBehaviour
 {   
     [SerializeField] private float upForce = 3f, moveForce = 2f, rotationForce  = 10f;
+    [SerializeField] private float velocityThreshold = 0.05f, rotationThreshold = 0.05f;
 
     private Rigidbody rb;
     private bool isRolling;
@@ -35,6 +37,22 @@ public class Dice : MonoBehaviour
         rb.AddForce(diceDirection, ForceMode.Impulse);
         rb.AddTorque(torqueDirection, ForceMode.Impulse);
 
+        Debug.Log("Dice launched");
         
+        StartCoroutine(WaitForDiceToStop());
+    }
+
+    private IEnumerator WaitForDiceToStop()
+    {
+        yield return new WaitForSeconds(2f);
+
+        while(rb.linearVelocity.magnitude > velocityThreshold || rb.angularVelocity.magnitude > rotationThreshold)
+        {
+            yield return null;
+        }
+
+        isRolling = false;
+
+        Debug.Log("Dice stopped");
     }
 }
