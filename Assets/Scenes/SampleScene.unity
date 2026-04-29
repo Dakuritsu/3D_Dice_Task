@@ -448,9 +448,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776a00fb98715434b911e9c26db8ddcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dice
+  faces:
+  - value: 5
+    localDirection: {x: 0, y: 1, z: 0}
+  - value: 2
+    localDirection: {x: 0, y: -1, z: 0}
+  - value: 4
+    localDirection: {x: 1, y: 0, z: 0}
+  - value: 3
+    localDirection: {x: -1, y: 0, z: 0}
+  - value: 1
+    localDirection: {x: 0, y: 0, z: 1}
+  - value: 6
+    localDirection: {x: 0, y: 0, z: -1}
   upForce: 3
   moveForce: 2
   rotationForce: 10
+  velocityThreshold: 0.05
+  rotationThreshold: 0.05
 --- !u!1 &590410261
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,7 +658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 721182dd181948e458d263db9d1058e6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.31
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 721182dd181948e458d263db9d1058e6, type: 3}
       propertyPath: m_LocalRotation.w
