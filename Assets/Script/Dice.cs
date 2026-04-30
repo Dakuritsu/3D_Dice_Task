@@ -11,7 +11,15 @@ public class Dice : MonoBehaviour
         public Vector3 localDirection;
     }
 
-    
+    [SerializeField]
+    private float upForce = 3f, moveForce = 2f, rotationForce  = 3f;
+
+    [SerializeField]
+    private float velocityThreshold = 0.15f, rotationThreshold = 0.2f;
+
+    [SerializeField]
+    private DiceResultUI resultUI;
+
     private readonly DiceFace[] faces =
     {
         new DiceFace{value = 5, localDirection = Vector3.up},
@@ -21,36 +29,47 @@ public class Dice : MonoBehaviour
         new DiceFace{value = 1, localDirection = Vector3.forward},
         new DiceFace{value = 6, localDirection = Vector3.back}
     };
-
-    [SerializeField] private float upForce = 3f, moveForce = 2f, rotationForce  = 10f;
-    [SerializeField] private float velocityThreshold = 0.05f, rotationThreshold = 0.05f;
-
     private Rigidbody rb;
+    private Vector3 startPosition;
+    private Quaternion startRotation;
     private bool isRolling;
+
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
+        startPosition = rb.position;
+        startRotation = rb.rotation;
+
+        resultUI.HideResult();
+
+        isRolling = false;
     }
 
     void Update()
     {
-        if(Mouse.current != null)
+        if(Mouse.current == null) return;
+        
+        if(Mouse.current.leftButton.wasPressedThisFrame && !isRolling)
         {
-            if(Mouse.current.leftButton.wasPressedThisFrame && !isRolling)
-            {
-                Roll();
-            }
+            Roll();
         }
 
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            ResetDice();
+        }
     }
 
+    // Apply random impulse and torque
     private void Roll()
     {
         isRolling = true;
 
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        resultUI.HideResult();
         
         Vector3 diceDirection = new Vector3(Random.Range(-moveForce, moveForce), upForce, Random.Range(-moveForce, moveForce));
         Vector3 torqueDirection = new Vector3(Random.Range(-rotationForce , rotationForce ),Random.Range(-rotationForce , rotationForce ),Random.Range(-rotationForce , rotationForce ));
@@ -58,7 +77,7 @@ public class Dice : MonoBehaviour
         rb.AddForce(diceDirection, ForceMode.Impulse);
         rb.AddTorque(torqueDirection, ForceMode.Impulse);
 
-        Debug.Log("Dice launched");
+        // Debug.Log("Dice launched");
         
         StartCoroutine(WaitForDiceToStop());
     }
@@ -72,14 +91,17 @@ public class Dice : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Dice stopped");
+        // Debug.Log("Dice stopped");
 
         int result = GetTopFace();
-        Debug.Log($"Result: {result}");
+        // Debug.Log($"Result: {result}");
 
         isRolling = false;
+
+        resultUI.ShowResult(result);
     }
 
+    // Determine which face is aligned with world up
     private int GetTopFace()
     {
         int topValue = 0;
@@ -97,5 +119,21 @@ public class Dice : MonoBehaviour
             }
         }
         return topValue;
+    }
+
+    private void ResetDice()
+    {
+        StopAllCoroutines();
+
+        isRolling = false;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        rb.position = startPosition;
+        rb.rotation = startRotation;
+
+        resultUI.HideResult();
+        
     }
 }
