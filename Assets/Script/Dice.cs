@@ -15,7 +15,7 @@ public class Dice : MonoBehaviour
     private float upForce = 3f, moveForce = 2f, rotationForce  = 3f;
 
     [SerializeField]
-    private float velocityThreshold = 0.15f, rotationThreshold = 0.2f;
+    private float velocityThreshold = 0.05f, rotationThreshold = 0.03f;
 
     [SerializeField]
     private DiceResultUI resultUI;
@@ -84,17 +84,14 @@ public class Dice : MonoBehaviour
 
     private IEnumerator WaitForDiceToStop()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2.5f);
 
         while(rb.linearVelocity.magnitude > velocityThreshold || rb.angularVelocity.magnitude > rotationThreshold)
         {
             yield return null;
         }
 
-        // Debug.Log("Dice stopped");
-
         int result = GetTopFace();
-        // Debug.Log($"Result: {result}");
 
         isRolling = false;
 
