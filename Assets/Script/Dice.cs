@@ -11,8 +11,14 @@ public class Dice : MonoBehaviour
         public Vector3 localDirection;
     }
 
-    [SerializeField]
-    private float upForce = 3f, moveForce = 2f, rotationForce  = 3f;
+    [SerializeField] private float minUpForce = 2f;
+    [SerializeField] private float maxUpForce = 4f;
+
+    [SerializeField] private float minMoveForce = 3f;
+    [SerializeField] private float maxMoveForce = 6f;
+
+    [SerializeField] private float minRotationForce = 2f;
+    [SerializeField] private float maxRotationForce = 5f;
 
     [SerializeField]
     private float velocityThreshold = 0.05f, rotationThreshold = 0.03f;
@@ -66,22 +72,49 @@ public class Dice : MonoBehaviour
     private void Roll()
     {
         isRolling = true;
-
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
         resultUI.HideResult();
-        
-        Vector3 diceDirection = new Vector3(Random.Range(-moveForce, moveForce), upForce, Random.Range(-moveForce, moveForce));
-        Vector3 torqueDirection = new Vector3(Random.Range(-rotationForce , rotationForce ),Random.Range(-rotationForce , rotationForce ),Random.Range(-rotationForce , rotationForce ));
-        
-        rb.AddForce(diceDirection, ForceMode.Impulse);
-        rb.AddTorque(torqueDirection, ForceMode.Impulse);
 
-        // Debug.Log("Dice launched");
-        
+        ResetPhysics();
+
+        Vector3 throwDirection = CreateThrowDirection();
+        Vector3 tumbleTorque = CreateTumbleTorque();
+
+        rb.AddForce(throwDirection, ForceMode.Impulse);
+        rb.AddTorque(tumbleTorque, ForceMode.Impulse);
+
         StartCoroutine(WaitForDiceToStop());
     }
 
+    private void ResetPhysics()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
+
+    // Create a random throw direction for the dice
+    private Vector3 CreateThrowDirection()
+    {
+        return new Vector3(
+            RandomForce(minMoveForce, maxMoveForce),
+            Random.Range(minUpForce, maxUpForce),
+            RandomForce(minMoveForce, maxMoveForce)
+        );
+    }
+
+    // Return a random force value
+    private float RandomForce(float minForce, float maxForce)
+    {
+        float force = Random.Range(minForce, maxForce);
+
+        return (Random.value < 0.5f) ? -force : force;
+    }
+
+    // Add extra rotation
+    private Vector3 CreateTumbleTorque()
+    {
+        return new Vector3(RandomForce(minRotationForce, maxRotationForce), 0, RandomForce(minRotationForce, maxRotationForce));
+    }
+    
     private IEnumerator WaitForDiceToStop()
     {
         yield return new WaitForSeconds(2.5f);
@@ -124,8 +157,7 @@ public class Dice : MonoBehaviour
 
         isRolling = false;
 
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        ResetPhysics();
 
         rb.position = startPosition;
         rb.rotation = startRotation;
