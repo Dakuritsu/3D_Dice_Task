@@ -11,14 +11,14 @@ public class Dice : MonoBehaviour
         public Vector3 localDirection;
     }
 
-    [SerializeField] private float minUpForce = 2f;
-    [SerializeField] private float maxUpForce = 4f;
+    [SerializeField] 
+    private float minUpForce = 2f, maxUpForce = 4f;
 
-    [SerializeField] private float minMoveForce = 3f;
-    [SerializeField] private float maxMoveForce = 6f;
+    [SerializeField] 
+    private float minMoveForce = 3f, maxMoveForce = 6f;
 
-    [SerializeField] private float minRotationForce = 2f;
-    [SerializeField] private float maxRotationForce = 5f;
+    [SerializeField] 
+    private float minRotationForce = 2f, maxRotationForce = 5f;
 
     [SerializeField]
     private float velocityThreshold = 0.05f, rotationThreshold = 0.03f;
@@ -94,11 +94,7 @@ public class Dice : MonoBehaviour
     // Create a random throw direction for the dice
     private Vector3 CreateThrowDirection()
     {
-        return new Vector3(
-            RandomForce(minMoveForce, maxMoveForce),
-            Random.Range(minUpForce, maxUpForce),
-            RandomForce(minMoveForce, maxMoveForce)
-        );
+        return new Vector3(RandomForce(minMoveForce, maxMoveForce), Random.Range(minUpForce, maxUpForce), RandomForce(minMoveForce, maxMoveForce));
     }
 
     // Return a random force value
