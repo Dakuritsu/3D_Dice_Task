@@ -1,5 +1,7 @@
 # 3D Dice Task
 
+![Dice Roll Preview](Images/dice.gif)
+
 ## Overview
 
 This project consists of creating an interactive 3D dice in Unity, capable of being rolled using the engine's physics system, automatically detecting the resulting face, and displaying the result above the dice.
@@ -42,6 +44,8 @@ To achieve this:
 
 This approach allows the rolled value to be determined reliably.
 
+![Face Detection Structure](Images/face-detection.png)
+
 ---
 
 ## Result Display
@@ -54,6 +58,8 @@ The text:
 * follows the dice position;
 * always faces the camera to remain readable at all times.
 
+![Dice Result](Images/dice-result.png)
+
 ---
 
 ## Scene Setup
@@ -61,6 +67,8 @@ The text:
 My initial idea was to create a more immersive environment, similar to a real dice rolling tray.
 
 I first considered downloading a 3D table or tray model. Since I could not find a satisfying free asset, I attempted to model one myself in Blender.
+
+![Scene](Images/BoardBlender.png)
 
 However, I ran into material import issues: Unity and Blender do not handle certain material systems in the same way, which led to several rendering incompatibilities.
 
@@ -75,6 +83,8 @@ Without satisfying results, I decided to return to a simpler setup while staying
 * a simple ground plane;
 * a camera centered on the scene;
 * invisible walls to prevent the dice from falling out of bounds.
+
+![Scene](Images/scene-overview.png)
 
 Since the dice could sometimes get stuck in corners or stabilize on an edge, I added invisible corner columns to soften collisions.
 
